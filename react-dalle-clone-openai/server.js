@@ -18,7 +18,7 @@ app.post("/images", async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: "A cute baby sea otter",
+          prompt: req.body.message,
           n: 2,
           size: "1024x1024",
         }),
@@ -29,7 +29,8 @@ app.post("/images", async (req, res) => {
         options
       );
       const data = await response.json();
-      console.log(data)
+      console.log(data.data)
+      res.send(data.data)
   } catch (error) {
     console.error(error);
   }
