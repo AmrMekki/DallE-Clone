@@ -6,15 +6,19 @@ app.use(cors());
 app.use(express.json());
 require("dotenv").config();
 const fs = require("fs");
+const fsExtra = require("fs-extra");
 const multer = require("multer");
-
-const openai = require("openai");
-
 const API_KEY = process.env.API_KEY;
+
+const OpenAI = require("openai");
+
+const openai = new OpenAI({
+  apiKey: API_KEY,
+});
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public");
+    cb(null, "public/images");
   },
   filename: (req, file, cb) => {
     console.log("file", file);
@@ -64,31 +68,25 @@ app.post("/upload", async (req, res) => {
 });
 
 app.post("/variations", async (req, res) => {
-  const options = {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "multipart/form-data",
-    },
-    body: JSON.stringify({
-      image: fs.createReadStream(filePath),
-      n: 2,
-      size: "256x256",
-    }),
-  };
   try {
-    const image = await openai.images.createVariation({
-        image: fs.createReadStream("otter.png"),
-      });
-    
-    console.log(image.data);
-    // const response = await fetch(
-    //   "https://api.openai.com/v1/images/variations",
-    //   options
-    // );
-    // const data = await response.json()
-    // console.log(data);
-    // res.send(response.data.data);
+    const response = await openai.images.createVariation({
+      image: fs.createReadStream(filePath),
+      n: "1",
+      size: "256x256",
+    });
+
+    // Delete everything inside the "images" folder after sending the response
+    const imagesFolderPath = "public/images";  // Update the folder path accordingly
+
+    fsExtra.emptyDir(imagesFolderPath, (err) => {
+      if (err) {
+        console.error("Error deleting folder content:", err);
+      } else {
+        console.log("Folder content deleted:", imagesFolderPath);
+      }
+    });
+
+    res.send(response.data);
   } catch (error) {
     console.error(error);
   }

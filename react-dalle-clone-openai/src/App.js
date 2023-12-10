@@ -14,15 +14,17 @@ const App = () => {
     "A pineapple sunbathing on an island",
   ];
 
-  const surpriseMe = () => {
+  const surpriseMe = (e) => {
     setImages(null);
+    e.preventDefault();
     const randomValue =
       surpriseOptions[Math.floor(Math.random() * surpriseOptions.length)];
     setValue(randomValue);
   };
 
-  const getImages = async () => {
+  const getImages = async (e) => {
     setImages(null);
+    // e.preventDefault();
     if (value === null) {
       setError("Error must have a search term");
       return;
@@ -47,7 +49,7 @@ const App = () => {
   };
 
   const uploadImage = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log(e.target.files[0]);
 
     const formData = new FormData();
@@ -70,8 +72,9 @@ const App = () => {
     }
   };
 
-  const generateVariations = async () => {
+  const generateVariations = async (e) => {
     setImages(null);
+    // e.preventDefault();
     if(selectedImage === null){
       setError('Error! Must have an existing image');
       setModalOpen(false);
@@ -117,7 +120,7 @@ const App = () => {
             <input
               onChange={uploadImage}
               id="file"
-              accept="image/*"
+              accept="image/png"
               type="file"
               hidden
             />

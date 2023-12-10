@@ -4,7 +4,8 @@ const Modal = ({setModalOpen, setSelectedImage, selectedImage, generateVariation
     const [error, setError] = useState(null);
     const ref = useRef(null);
 
-    const closeModal = () => {
+    const closeModal = (e) => {
+        e.preventDefault();
         setModalOpen(false);
         setSelectedImage(null);
     }

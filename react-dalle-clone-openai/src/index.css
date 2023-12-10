@@ -102,7 +102,7 @@ p {
 }
 
 .overlay {
-  position: absolute;
+  position: fixed; /*changed to fixed from absolute*/
   top: 0;
   left: 0;
   width: 100vw;
